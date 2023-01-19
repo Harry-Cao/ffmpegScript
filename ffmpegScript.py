@@ -10,7 +10,7 @@ class FileType(Enum):
     rmvb = 3
     gif = 4
 
-input_directory = '/Users/harrycao/Desktop/input/周星驰合集'
+input_directory = '/Users/harrycao/Desktop/input/周星驰合集/家有喜事'
 output_directory = '/Users/harrycao/Desktop/output'
 inputType = FileType.mkv
 outputType = FileType.mp4
@@ -43,9 +43,9 @@ def inputPathsFromDirectory(directory: str) -> list[str]:
 
 # ffmpeg操作命令串
 def middleCmdStringWithType(type: FileType) -> str:
-    return ' -map 0:v -vcodec copy -map 0:a:1 -acodec copy '
+    # return ' -map 0:v -vcodec copy -map 0:a:1 -acodec copy '
     if type == FileType.mkv:
-        return ' -vcodec copy -acodec code '
+        return ' -vcodec copy -acodec acc '
     else:
         return ' '
 
