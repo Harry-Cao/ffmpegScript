@@ -2,6 +2,7 @@ import os
 import time
 import sys
 from enum import Enum
+import re
 
 
 class FileType(Enum):
@@ -10,7 +11,7 @@ class FileType(Enum):
     rmvb = 3
     gif = 4
 
-input_directory = '/Users/harrycao/Desktop/input/周星驰合集/家有喜事'
+input_directory = '/Users/harrycao/Desktop/input/周星驰合集/百变星君'
 output_directory = '/Users/harrycao/Desktop/output'
 inputType = FileType.mkv
 outputType = FileType.mp4
@@ -42,19 +43,27 @@ def inputPathsFromDirectory(directory: str) -> list[str]:
     return inputFilePaths
 
 # ffmpeg操作命令串
-def middleCmdStringWithType(type: FileType) -> str:
-    # return ' -map 0:v -vcodec copy -map 0:a:1 -acodec copy '
+def middleCmdStringFrom(path: str, type: FileType) -> str:
     if type == FileType.mkv:
-        return ' -vcodec copy -acodec acc '
+        # aac音轨、刻录字幕
+        return ' -filter_complex [0:v:0]subtitles=' + path + ':si=0[v] -map [v] -map 0:a:1 -c:a aac '
+        # aac音轨、流式字幕
+        return ' -map 0:0 -map 0:a:1 -map 0:s:0 -c:v copy -c:a aac -c:s mov_text -metadata:s:s:0 language=chs '
+        # 处理音轨
+        return ' -map 0:v -vcodec copy -map 0:a:1 -acodec copy '
+        # 音频编码
+        return ' -vcodec copy -acodec aac '
     else:
         return ' '
 
 # mkv转mp4
 def mkvToMp4_single(inputPath: str, outputPath: str):
-    middleCmdString = middleCmdStringWithType(inputType)
+    # getVideoInfoCmd = 'ffprobe -i ' + inputPath
+    # os.system(getVideoInfoCmd)
+    middleCmdString = middleCmdStringFrom(inputPath, inputType)
     cmdString = 'ffmpeg -i ' + inputPath + middleCmdString + outputPath
-    # os.system(cmdString)
-    os.popen(cmdString, 'w', 1)
+    os.system(cmdString)
+    # os.popen(cmdString, 'w', 1)
 
 # 创建目录
 def createDirectory(directory: str):
