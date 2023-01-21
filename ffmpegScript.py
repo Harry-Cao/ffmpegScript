@@ -1,8 +1,8 @@
 import os
-import time
 import sys
 from enum import Enum
-import re
+from urllib import parse
+import FileManager
 
 
 class FileType(Enum):
@@ -11,7 +11,7 @@ class FileType(Enum):
     rmvb = 3
     gif = 4
 
-input_directory = '/Users/harrycao/Desktop/input/周星驰合集/百变星君'
+input_directory = '/Users/harrycao/Desktop/input/周星驰合集'
 output_directory = '/Users/harrycao/Desktop/output'
 inputType = FileType.mkv
 outputType = FileType.mp4
@@ -29,9 +29,9 @@ def inputPathsFromDirectory(directory: str) -> list[str]:
         # print("files", files)  # 当前路径下所有非目录子文件
 
         # 在输出文件夹生成相应的目录
-        for dir in dirs:
-            outputDirectory = output_directory + '/' + dir
-            createDirectory(outputDirectory)
+        # for dir in dirs:
+        #     outputDirectory = output_directory + '/' + dir
+        #     createDirectory(outputDirectory)
 
         # 获取所有符合条件的子文件
         for file in files:
@@ -39,6 +39,10 @@ def inputPathsFromDirectory(directory: str) -> list[str]:
             if fileName.find(inputType.name) > 0:
                 inputFilePath = str(root + '/' + fileName)
                 inputFilePaths.append(inputFilePath)
+            else:
+                removePath = str(root + '/' + fileName)
+                removeFile(removePath)
+
     
     return inputFilePaths
 
@@ -48,11 +52,11 @@ def middleCmdStringFrom(path: str, type: FileType) -> str:
         # aac音轨、刻录字幕
         return ' -filter_complex [0:v:0]subtitles=' + path + ':si=0[v] -map [v] -map 0:a:1 -c:a aac '
         # aac音轨、流式字幕
-        return ' -map 0:0 -map 0:a:1 -map 0:s:0 -c:v copy -c:a aac -c:s mov_text -metadata:s:s:0 language=chs '
-        # 处理音轨
-        return ' -map 0:v -vcodec copy -map 0:a:1 -acodec copy '
-        # 音频编码
-        return ' -vcodec copy -acodec aac '
+        # return ' -map 0:0 -map 0:a:1 -map 0:s:0 -c:v copy -c:a aac -c:s mov_text -metadata:s:s:0 language=chs '
+        # aac音轨、无字幕
+        # return ' -map 0:v -vcodec copy -map 0:a:1 -acodec aac '
+        # aac音轨
+        # return ' -vcodec copy -acodec aac '
     else:
         return ' '
 
@@ -69,6 +73,13 @@ def mkvToMp4_single(inputPath: str, outputPath: str):
 def createDirectory(directory: str):
     if not os.path.exists(directory):
         os.mkdir(directory)
+
+# 移除文件
+def removeFile(path: str):
+    # path = path.replace('(', '\(').replace(')', '\)')
+    cmdString = 'rm ' + parse.urlencode(path)
+    print(cmdString)
+    # os.system(cmdString)
 
 # 目录下级文件转.mp4
 def mkvToMp4(inputDirectory: str, outputDirectory: str):
@@ -111,7 +122,8 @@ def getFileType(request: str) -> FileType:
 # output_directory = getOutputDirectory('请输入存放目录：')
 # inputType = getFileType('请输入目标类型：')
 # outputType = getFileType('请输入输出类型：')
-mkvToMp4(input_directory, output_directory)
+# mkvToMp4(input_directory, output_directory)
+FileManager.walkDirectory(input_directory)
 
 
 
