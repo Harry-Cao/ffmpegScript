@@ -123,7 +123,7 @@ def getFileType(request: str) -> FileType:
 # inputType = getFileType('请输入目标类型：')
 # outputType = getFileType('请输入输出类型：')
 # mkvToMp4(input_directory, output_directory)
-FileManager.walkDirectory(input_directory)
+FileManager.copyDirectory(input_directory, output_directory)
 
 
 
