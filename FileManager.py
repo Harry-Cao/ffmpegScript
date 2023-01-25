@@ -1,5 +1,4 @@
 import os
-from urllib import parse
 
 class fileManager():
     def __init__(self, directory: str):
@@ -19,8 +18,16 @@ def walkDirectory(directory: str):
         # 获取所有符合条件的子文件
         for file in files:
             filePath = root + '/' + file
-            filePath = parse.urlencode(filePath)
+            filePath = pathEncode(filePath)
             print(filePath)
+
+def pathEncode(path: str) -> str:
+    path = path.replace('(', '\(')
+    path = path.replace(')', '\)')
+    path = path.replace('[', '\[')
+    path = path.replace(']', '\]')
+    path = path.replace('?', '\?')
+    return path
 
 
 walkDirectory('/Users/harrycao/Desktop/output/周星驰合集')
