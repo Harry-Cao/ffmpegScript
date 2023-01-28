@@ -1,4 +1,11 @@
 import os
+from enum import Enum
+
+class ConditionType(Enum):
+    endInput = 0
+    contain = 1
+    notContain = 2
+    allFile = 3
 
 def walkDirectory(directory: str) -> tuple:
     allDirectories: list[str] = []
@@ -43,4 +50,29 @@ def createDirectory(directory: str):
         os.mkdir(directory)
 
 
-copyDirectory('/Users/harrycao/Desktop/YSCloud', '/Users/harrycao/Desktop/output')
+# copyDirectory('/Users/harrycao/Desktop/YSCloud', '/Users/harrycao/Desktop/output')
+
+
+targetFiles: list[str] = []
+
+
+def searchFiles(fileList: list[str]):
+    condition = getCondition('请输入选择条件(0-完成输入 1-包含 2-不包含 3-所有文件): ')
+    if condition == ConditionType.endInput:
+        return
+    elif condition == ConditionType.contain:
+        pass
+    elif condition == ConditionType.notContain:
+        pass
+    elif condition == ConditionType.allFile:
+        pass
+    print('搜索到符合条件的文件数:' + str(targetFiles.count))
+    searchFiles(fileList)
+    
+
+
+def getCondition(request: str) -> ConditionType:
+    input = input(request)
+    inputNum = int(input)
+    condition = ConditionType(inputNum)
+    return condition
