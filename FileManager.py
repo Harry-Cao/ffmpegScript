@@ -56,16 +56,24 @@ def createDirectory(directory: str):
 targetFiles: list[str] = []
 
 
+def filtFiles(directory: str):
+    resultTuple = walkDirectory(directory)
+    targetFiles += resultTuple[0]
+
+
 def searchFiles(fileList: list[str]):
     condition = getCondition('请输入选择条件(0-完成输入 1-包含 2-不包含 3-所有文件): ')
+    conditionString = ''
     if condition == ConditionType.endInput:
         return
     elif condition == ConditionType.contain:
-        pass
+        conditionString = getConditionString('包含: ')
+        getTargetFilesContain(conditionString)
     elif condition == ConditionType.notContain:
-        pass
+        conditionString = getConditionString('不包含: ')
+        getTargetFilesNotContain(conditionString)
     elif condition == ConditionType.allFile:
-        pass
+        return
     print('搜索到符合条件的文件数:' + str(targetFiles.count))
     searchFiles(fileList)
     
@@ -76,3 +84,21 @@ def getCondition(request: str) -> ConditionType:
     inputNum = int(input)
     condition = ConditionType(inputNum)
     return condition
+
+def getConditionString(request: str) -> str:
+    input = input(request)
+    return input
+
+def getTargetFilesContain(containString: str):
+    resultFiles: list[str] = []
+    for targetFile in targetFiles:
+        if targetFile.find(containString) > 0:
+            resultFiles.append(targetFile)
+    targetFiles = resultFiles
+
+def getTargetFilesNotContain(notContainString: str):
+    resultFiles = targetFiles
+    for targetFile in targetFiles:
+        if targetFile.find(notContainString) > 0:
+            resultFiles.remove(targetFile)
+    targetFiles = resultFiles
